@@ -30,6 +30,7 @@
     "dns": "^0.2.2",
     "intro.js": "^2.9.3",
     "mapbox-gl": "^1.6.1",
+    "tableau-api": "^2.2.3",
     "uswds": "^2.4.0",
     "vue": "^2.6.11",
     "vue-analytics": "^5.20.1",

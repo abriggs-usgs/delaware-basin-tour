@@ -13,8 +13,8 @@
         >
           <div
             v-show="!isTourRunning"
-            @click="moveToLocation(chapter.flyToCommands, chapter.id), toggleLayerVisibility(chapter.id, chapter.layersToHide, chapter.hiddenLayersToShow), addMonitoringLocationRings(chapter.D3Rings), chapter.isText ? toggleTextOverlay(state='on', chapter.html) : toggleTextOverlay(state='off', null)"
-            @mouseover="moveToLocation(chapter.flyToCommands, chapter.id), toggleLayerVisibility(chapter.id, chapter.layersToHide, chapter.hiddenLayersToShow), addMonitoringLocationRings(chapter.D3Rings), chapter.isText ? toggleTextOverlay(state='on', chapter.html) : toggleTextOverlay(state='off', null)"
+            @click="moveToLocation(chapter.flyToCommands, chapter.id), toggleLayerVisibility(chapter.id, chapter.layersToHide, chapter.hiddenLayersToShow), addMonitoringLocationRings(chapter.D3Rings), chapter.isText ? toggleTextOverlay(state='on', chapter.html) : toggleTextOverlay(state='off', null), runTableau(chapter.id)"
+            @mouseover="moveToLocation(chapter.flyToCommands, chapter.id), toggleLayerVisibility(chapter.id, chapter.layersToHide, chapter.hiddenLayersToShow), addMonitoringLocationRings(chapter.D3Rings), chapter.isText ? toggleTextOverlay(state='on', chapter.html) : toggleTextOverlay(state='off', null), runTableau(chapter.id)"
           >
             <h3>{{ chapter.title }}</h3>
             <p>
@@ -95,6 +95,8 @@
     import mapStylesDark from "../assets/mapStyles/mapStylesDark";
     import mapStyles from "../assets/mapStyles/mapStyles";
 
+    import tableau from "tableau-api";
+
     export default {
         name: "StoryBoard",
         components:{
@@ -111,10 +113,55 @@
                 indexOfPausedTour: 0,
                 locationsRemainingInTour: null,
                 isZoomedIn: false,
-                isDarkStyle: false
+                isDarkStyle: false,
+                tableau_viz: null,
+                tableau_viz_url: 'http://public.tableau.com/views/RegionalSampleWorkbook/Storms'
             };
         },
         methods: {
+            initTableau(containingElement) {
+                const options = {
+                    hideTabs: true,
+                    width: "700px",
+                    height: "800px",
+                    onFirstInteractive: () => {
+                        const sheet = this.tableau_viz.getWorkbook().getActiveSheet().getWorksheets().get("Table");
+                        const options = {
+                            ignoreAliases: false,
+                            ignoreSelection: false,
+                            includeAllColumns: false
+                        };
+                        sheet.getUnderlyingDataAsync(options).then((t) => {
+                            const tableauData = t.getData();
+                            let data = [];
+                            const pointCount = tableauData.length;
+                            for (let a = 0; a < pointCount; a++) {
+                                data = data.concat({
+                                    x: tableauData[a][0].value,
+                                    y: Math.round(tableauData[a][3].value, 2)
+                                })
+                            }
+                        })
+                    }
+                };
+
+                this.tableau_viz = new window.tableau.Viz(containingElement, this.tableau_viz_url, options);
+            },
+            runTableau(chapterId) {
+                const tableauChapter = document.getElementById('tableau-test');
+
+                if (document.contains(document.getElementById('tableauGraphDiv'))) {
+                    document.getElementById('tableauGraphDiv').remove();
+                }
+
+                if(chapterId === 'tableau-test') {
+                  const tableauGraphDiv = document.createElement('div');
+                  tableauGraphDiv.id = 'tableauGraphDiv';
+                  tableauChapter.appendChild(tableauGraphDiv);
+                  this.initTableau(tableauGraphDiv, );
+
+                }
+            },
             zoomToggle() {
                 const self = this;
                 const map = this.$store.map;
@@ -342,7 +389,7 @@
     };
 </script>
 <style scoped lang="scss">
-  #story-chapters-container{
+  #story-chapters-container {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -415,7 +462,6 @@
   }
 
   .mapboxgl-popup{
-
     .mapboxgl-popup-content {
       text-align: center;
       border-radius: 10px;

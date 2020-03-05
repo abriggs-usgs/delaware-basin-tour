@@ -34,6 +34,24 @@ export default {
             "D3Rings": false
         },
         {
+            "id": "tableau-test",
+            "class": "",
+            "flyToCommands": {
+                "duration": 9000,
+                "bearing": 0,
+                "center": [-75.600766, 40.4467],
+                "zoom": 5,
+                "pitch": 0,
+                "speed": 0.2,
+                "essential": true
+            },
+            "title": "Tableau Test",
+            "content": "Test Tableau Integration",
+            "tourType": "none",
+            "layersToHide": ["all_locations", "monitoring-location-clusters", "monitoring-location-cluster-count",  "monitoring-location-unclustered-point", "physiographic_provinces"],
+            "hiddenLayersToShow": []
+        },
+        {
             "id": "dark-colors",
             "class": "",
             "flyToCommands": {
