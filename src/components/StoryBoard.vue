@@ -116,6 +116,7 @@
                 isDarkStyle: false,
                 tableau_viz: null,
                 tableau_viz_url: 'http://public.tableau.com/views/RegionalSampleWorkbook/Storms'
+                // Megan's workbook tableau_viz_url: 'https://cors-anywhere.herokuapp.com/https://tableau.chs.usgs.gov/#/views/AnalyticsDashboardExploration/ComparisonDashboard?:iid=1'
             };
         },
         methods: {
@@ -158,8 +159,7 @@
                   const tableauGraphDiv = document.createElement('div');
                   tableauGraphDiv.id = 'tableauGraphDiv';
                   tableauChapter.appendChild(tableauGraphDiv);
-                  this.initTableau(tableauGraphDiv, );
-
+                  this.initTableau(tableauGraphDiv);
                 }
             },
             zoomToggle() {
